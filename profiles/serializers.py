@@ -18,20 +18,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
-            'title',
-            'body',
-            'userid',
-            'comments'
-        ]
+        fields = ('title', 'body', 'userid', 'comments')
     
         
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = (
-            'name',
-            'email',
-            'body',
-            'postid',
-        )
+        fields = ('name', 'email', 'body', 'postid')
+
+
+class TotalPostCommentSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    name = serializers.CharField(max_length=128)
+    total_posts = serializers.IntegerField()
+    total_comments = serializers.IntegerField()
+

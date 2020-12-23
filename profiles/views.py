@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from profiles.models import Profile, Post, Comment
-from profiles.serializers import ProfileSerializer, ProfilePostSerializer, PostSerializer,CommentSerializer
+from profiles.serializers import ProfileSerializer, ProfilePostSerializer, PostSerializer, CommentSerializer, TotalPostCommentSerializer
 # Create your views here.
 
 class ProfileList(generics.ListCreateAPIView):
@@ -52,7 +52,7 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     name = 'comment-detail'
 
-
+    
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
@@ -62,3 +62,14 @@ class ApiRoot(generics.GenericAPIView):
             'profile-posts': reverse(ProfilePost.name, request=request),
             'post-comments': reverse(PostComment.name, request=request),
         })
+
+
+class TotalPostComment(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        profile = Profile.objects.get(id=kwargs['pk'])
+        total_posts = profile.total_posts()
+        total_comments = profile.total_comments()
+        data = {'pk': profile.id, 'name': profile.name, 'total_posts': total_posts, 'total_comments': total_comments}
+        serializer = TotalPostCommentSerializer(data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    name = 'total-posts-comments'

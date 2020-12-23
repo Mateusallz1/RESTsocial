@@ -5,6 +5,14 @@ class Profile(models.Model):
     name = models.CharField(max_length=128)
     email = models.EmailField()    
     
+    def total_posts(self):
+        total = Post.objects.filter(userid=self).count()
+        return total
+
+    def total_comments(self):
+        total = Comment.objects.filter(postid__userid=self).count()
+        return total
+
     class Meta:
         ordering = ('name',)
 
